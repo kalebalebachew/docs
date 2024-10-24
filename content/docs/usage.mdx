@@ -1,0 +1,57 @@
+---
+title: Usage Guide
+description: Learn how to apply middleware, configure retry limits, and replay failed requests in Replay-API.
+---
+
+##### This guide will walk you through the usage of **Replay-API**, covering how to apply the middleware, configure retry limits, and replay failed requests.
+
+## Applying the Middleware
+
+### Global Middleware Application
+
+You can apply the **Replay-API** middleware globally across all routes in your Express application. This ensures that every incoming request will be tracked for potential failure and retry.
+
+```js
+import { requestReplayMiddleware } from 'replay-api';
+
+app.use(requestReplayMiddleware);
+
+```
+
+### Route specific Middleware Application
+
+If you want more control and only wish to apply the middleware to specific routes, you can do so by applying it to the individual route handlers.
+
+```js
+app.post('/api/test-endpoint', requestReplayMiddleware, (req, res) => {
+  // Your route logic here
+});
+
+```
+## Configuring Retry Limits
+
+```js
+import { replayFailedRequests } from 'replay-api';
+
+replayFailedRequests({ retryLimit: 5 });
+
+```
+## Replaying Failed Requests
+Once failed requests have been captured, you can replay them using the Replay-API’s **replayFailedRequests** function. This function will automatically handle the retry logic for you.
+
+```js
+import { replayFailedRequests } from 'replay-api';
+
+replayFailedRequests();
+
+```
+## Customizing Replay Options
+
+```js
+replayFailedRequests({
+  retryLimit: 3,
+  retryInterval: 2000, // in milliseconds
+  onRetry: (request) => console.log(`Retrying request: ${request.url}`)
+});
+
+```
